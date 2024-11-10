@@ -1,76 +1,81 @@
 import os
 from dotenv import load_dotenv, find_dotenv
 import openai
-from openai import OpenAI
-
-
+# Do this once and it will work from then on ↓
+# import nltk
+# nltk.download('punkt')
+# nltk.download('punkt_tab')
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.text_rank import TextRankSummarizer
 
 load_dotenv(find_dotenv())
 openai.api_key = os.getenv("API_KEY")
 
-# aimemory = "Question: In a coffee shop, is it good to yell loudly"
-# userMemory = "Yes it is appropriate if you need something very urgently"
-memory = "AI: In a coffee shop, is it appropriate to yell loudly? User: Yes it is appropriate if you need something very urgently"
+memory = ""
 numAsks = 0
 
-# def generateResponse(memory, prompt):
-#     if numAsks < 10:
-#         prompt = prompt + " Here are some past responses in 10 words: " + memory + " End your response with a 10 word summary of what happened in your response so that you can use it in the future."
-#         response = llm.chat.completions.create(
-#             model="gpt-3.5-turbo",
-#             messages=[
-#                 {
-#                     {"role": "system", "content": "You are someone who can give social situations to socially awkward and autistic people, and then help critique their responses. All previous prompts and responses will be in the prompt you are given. "}, 
-#                     {"role": "user", "content": prompt}  
-#                 }
-#             ]
-#         )
-#         return response.choices[0].message.content
-#     else:
-#         print("Out of responses! Either generate a new text thread or delete this one to start fresh.")
+def summarize_text(text, sentence_count=2):
+    parser = PlaintextParser.from_string(text, Tokenizer("english"))
+    summarizer = TextRankSummarizer()
+    summary = summarizer(parser.document, sentence_count)
+    return " ".join(str(sentence) for sentence in summary)
 
-
-def ask_openai():
-    global numAsks
+def generate_social_scenario(difficulty):
     global memory
+    prompt = f"Create a social scenario for a person with social anxiety or autism. Make the scenario have a '{difficulty}' level of difficulty."
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a therapist who can give social scenarios to individuals working to improve social skills."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7
+        )
+        scenario = response.choices[0].message.content
+        memory += f"Scenario: {summarize_text(scenario)}"
+        return scenario
+    except Exception as exception:
+        return "ERROR W/ SCENARIO!!"
+
+def ask_openai(user_response):
+    global numAsks, memory
     if numAsks < 10:
-        # try:
-            prompt = "Help critique this user's response to the social situation found in what you asked previously. Either tell them to try again or say their response was satisfactory. Explain all of their errors. Here's a transcript of previous responses: " + memory
+        prompt = f"Critique this user's newest response based on the conversation you have had with them so far. Here is a transcript of prior responses and feedback: {memory}. The user's latest response is: {user_response}. Then rate their response out of 100."
+        try:
             response = openai.chat.completions.create(
-                model="gpt-3.5-turbo", 
+                model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "system", "content": "You are someone who can give social situations to socially awkward and autistic people, and then help critique their responses. All previous prompts and responses will be in the prompt you are given. "}, 
-                    {"role": "user", "content": prompt}  
+                    {"role": "system", "content": "You are a therapist who can help socially awkward and autistic people and children. Provide constructive feedback on their responses based on the conversation you've had with them so far."},
+                    {"role": "user", "content": prompt}
                 ],
-                temperature=0.7  
+                temperature=0.7
             )
-            numAsks = numAsks + 1
-            return response.choices[0].message.content
-        # except Exception as e:
-        #     return f"Error: {str(e)}"
+            numAsks += 1
+            ai_response = response.choices[0].message.content
+            memory += f"User: {user_response} AI: {summarize_text(ai_response)} "
+            return ai_response
+        except Exception as e:
+            return f"Error: {str(e)}"
     else:
-        print("Out of responses! Either generate a new text thread or delete this one to start fresh.")
+        memory = ""
+        return "Out of responses! Either start a new session or reset the memory."
 
-def printEditResponse(res):
-    global aimemory
-    words = res.split(" ")
-    aimemory += "Next response: "
-    for y in range(len(words)-10, len(words)):
-        aimemory = aimemory + words[y] + " "
-    editResponse = ""
-    for x in range(0, len(words) - 10):
-        editResponse = editResponse + words[x] + " "
-    return editResponse
+def tester():
+    global memory
+    difficulty = "medium"
+    scenario = generate_social_scenario(difficulty)
+    print("Scenario:", scenario)
+    user_response = "I would quietly ask the librarian to help. \n"
+    ai_feedback = ask_openai(user_response)
+    print("MEMORY SO FAR (1): " + memory + "\n")
+    print("User response: " + user_response + "AI Feedback:" + ai_feedback + "\n")
+    new_response = "If they seem busy, I'll wait before asking. \n"
+    ai_feedback2 = ask_openai(new_response)
+    print("MEMORY SO FAR (2): " + memory + "\n")
+    print("new response: " + new_response + "AI Feedback on new response: " + ai_feedback2 + "\n")
 
-response = ask_openai()
-print("OG RESPONSE")
-print(response)
-# print("EDITED RESPONSE")
-# print(printEditResponse(response))
-print("*********************************************************************************")
-memory = memory + "AI: " + response
-memory += "User: But what if I really need to use the bathroom and there is a huge line?"
-response2 = ask_openai()
-print(response2)
-# print("EDITED RESPONSE")
-# print(printEditResponse(response2))
+tester()
+
+
