@@ -8,12 +8,14 @@ import openai
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
+import matplotlib.pyplot as plt
 
 load_dotenv(find_dotenv())
 openai.api_key = os.getenv("API_KEY")
 
 memory = ""
 numAsks = 0
+ratings = []
 
 def summarize_text(text, sentence_count=2):
     parser = PlaintextParser.from_string(text, Tokenizer("english"))
@@ -40,9 +42,9 @@ def generate_social_scenario(difficulty):
         return "ERROR W/ SCENARIO!!"
 
 def ask_openai(user_response):
-    global numAsks, memory
+    global numAsks, memory, ratings
     if numAsks < 10:
-        prompt = f"Critique this user's newest response based on the conversation you have had with them so far. Here is a transcript of prior responses and feedback: {memory}. The user's latest response is: {user_response}. Then rate their response out of 100."
+        prompt = f"Critique this user's newest response based on the conversation you have had with them so far. Here is a transcript of prior responses and feedback: {memory}. The user's latest response is: {user_response}. Then rate their response out of 100. End the entire passage with text that states"
         try:
             response = openai.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -54,6 +56,10 @@ def ask_openai(user_response):
             )
             numAsks += 1
             ai_response = response.choices[0].message.content
+            both = ai_response.split("Rating: ")
+            rating = both[1][:2]
+            ratings.append(int(rating))
+            print("RATINGSSSSSSSSS: " + str(ratings))
             memory += f"User: {user_response} AI: {summarize_text(ai_response)} "
             return ai_response
         except Exception as e:
@@ -78,4 +84,35 @@ def tester():
 
 tester()
 
+def sendInfo():
+    global memory, ratings
+    # ratings = []
+    prompt = f"Send a quick summary of this user's prior responses and feedback to a parent. To start off, briefly, a few words, tell them each scenario, their child's response, and the overall rating out of 100. The ratings are in the array {ratings}. Additionally, explain to the parent their child's progress. Here is a transcript of prior responses and feedback: {memory}. Tell the parents what their child struggled on and need to improve. Finally, tell the parents what they could do with their child to help them overcome these struggles. Express everything as quick and easy to read."
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a summarizer bot whose job it is to communicate the user's progress to their parents."},
+                {"role": "user", "content": prompt}
+            ],
+        )
+        ai_response = response.choices[0].message.content
+        # print(ratings)
+        visualize_ratings(ratings)
+        return ai_response
+    
+    except Exception as e:
+        return f"Error: {str(e)}"
+    
 
+def visualize_ratings(ratings):
+    plt.figure(figsize=(8, 4))
+    plt.plot(ratings, marker='o', color='b', label='Rating')
+    plt.title("User's Rating Over Time")
+    plt.xlabel("Scenario")
+    plt.ylabel("Rating (Out of 100)")
+    plt.xticks(range(len(ratings))) 
+    plt.grid(True)
+    plt.show()
+
+print(sendInfo())
