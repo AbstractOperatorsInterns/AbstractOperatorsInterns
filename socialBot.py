@@ -10,7 +10,12 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
 import matplotlib.pyplot as plt
 
-load_dotenv(find_dotenv())
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+
+
+
+load_dotenv()
 openai.api_key = os.getenv("API_KEY")
 
 memory = ""
@@ -82,8 +87,6 @@ def tester():
     print("MEMORY SO FAR (2): " + memory + "\n")
     print("new response: " + new_response + "AI Feedback on new response: " + ai_feedback2 + "\n")
 
-tester()
-
 def sendInfo():
     global memory, ratings
     # ratings = []
@@ -103,7 +106,6 @@ def sendInfo():
     
     except Exception as e:
         return f"Error: {str(e)}"
-    
 
 def visualize_ratings(ratings):
     plt.figure(figsize=(8, 4))
@@ -116,3 +118,14 @@ def visualize_ratings(ratings):
     plt.show()
 
 print(sendInfo())
+
+app = Flask(__name__)
+CORS(app)
+
+
+@app.route("/members", methods=['POST'])
+def members():
+    return jsonify({"result": "Helloworld!"})
+
+if __name__ == "__main__":
+    app.run(debug=True)
