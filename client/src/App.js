@@ -22,6 +22,14 @@ function App() {
   return (
     
     <div>
+      <textarea
+        id="message"
+        rows={4}
+        className="w-full px-3 py-2 text-gray-700 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+        placeholder="Enter response..."
+        value={inputData}
+        onChange={(e) => setInputData(e.target.value)}
+      ></textarea>
       <button onClick={handleSubmit}> Hello!!</button>
       <p>{result}</p>
     </div>

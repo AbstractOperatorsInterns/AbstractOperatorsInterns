@@ -49,7 +49,7 @@ def generate_social_scenario(difficulty):
 def ask_openai(user_response):
     global numAsks, memory, ratings
     if numAsks < 10:
-        prompt = f"Critique this user's newest response based on the conversation you have had with them so far. Here is a transcript of prior responses and feedback: {memory}. The user's latest response is: {user_response}. Then rate their response out of 100. End the entire passage with text that states"
+        prompt = f"Critique this user's newest response based on the conversation you have had with them so far. Here is a transcript of prior responses and feedback: {memory}. The user's latest response is: {user_response}. Then rate their response out of 100. Do not include a transcript of previous responses in your response."
         try:
             response = openai.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -61,10 +61,10 @@ def ask_openai(user_response):
             )
             numAsks += 1
             ai_response = response.choices[0].message.content
-            both = ai_response.split("Rating: ")
-            rating = both[1][:2]
-            ratings.append(int(rating))
-            print("RATINGSSSSSSSSS: " + str(ratings))
+            # both = ai_response.split("Rating: ")
+            # rating = both[1][:2]
+            # ratings.append(int(rating))
+            # print("RATINGSSSSSSSSS: " + str(ratings))
             memory += f"User: {user_response} AI: {summarize_text(ai_response)} "
             return ai_response
         except Exception as e:
@@ -117,15 +117,19 @@ def visualize_ratings(ratings):
     plt.grid(True)
     plt.show()
 
-print(sendInfo())
+scenario = generate_social_scenario(8)
 
 app = Flask(__name__)
 CORS(app)
 
-
 @app.route("/members", methods=['POST'])
 def members():
-    return jsonify({"result": "Helloworld!"})
+    global scenario
+    message = request.json.get('input_data')   
+    print(message)
+    output = ask_openai(message)
+    print(output)
+    return jsonify({"result": "Social situation: " + scenario + " \n " + output})
 
 if __name__ == "__main__":
     app.run(debug=True)
