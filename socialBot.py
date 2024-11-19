@@ -2,14 +2,16 @@ import os
 from dotenv import load_dotenv, find_dotenv
 import openai
 # Do this once and it will work from then on ↓
-# import nltk
-# nltk.download('punkt')
-# nltk.download('punkt_tab')
+import nltk
+nltk.download('punkt')
+nltk.download('punkt_tab')
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
 import matplotlib.pyplot as plt
 
+load_dotenv(find_dotenv())
+openai.api_key = os.getenv("OPENAI_API_KEY")
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
