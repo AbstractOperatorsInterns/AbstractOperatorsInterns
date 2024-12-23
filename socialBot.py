@@ -28,9 +28,8 @@ def members():
     global scenario
     message = request.json.get('input_data')   
     print(message)
-    # output = ask_openai(message)
-    print(output)
-    return jsonify({"result": "Social situation: " + scenario + " \n " + output})
+    social_bot = SocialBot(7)
+    return jsonify({"result": "Social Situation: " + social_bot.socialSit + " ******** \n " + social_bot.ask_openai(message)})
 
 if __name__ == "__main__":
     app.run(debug=True)
@@ -38,6 +37,7 @@ if __name__ == "__main__":
 class SocialBot:
     def __init__(self, difficulty):
         self.memory = self.generate_social_scenario(difficulty)
+        self.socialSit = self.memory
         self.numAsks = 0
         self.ratings = []
         
