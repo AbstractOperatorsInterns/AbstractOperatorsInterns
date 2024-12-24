@@ -1,10 +1,18 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
+<<<<<<< Updated upstream
+=======
+import { useNavigate } from 'react-router-dom';
+>>>>>>> Stashed changes
 
 function App() {
 
   const [inputData, setInputData] = useState("")
   const [result, setResult] = useState("")
+<<<<<<< Updated upstream
+=======
+  const navigate = useNavigate();
+>>>>>>> Stashed changes
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -18,6 +26,19 @@ function App() {
       setResult("An error occurred. Please try again.")
     }
   }
+<<<<<<< Updated upstream
+=======
+
+
+  const fileUpload = async (e) => {
+    e.preventDefault();
+    navigate('/file-upload'); 
+  }
+
+
+
+
+>>>>>>> Stashed changes
   
   return (
     
@@ -31,6 +52,10 @@ function App() {
         onChange={(e) => setInputData(e.target.value)}
       ></textarea>
       <button onClick={handleSubmit}> Hello!!</button>
+<<<<<<< Updated upstream
+=======
+      <button onClick={fileUpload}>File upload page</button>
+>>>>>>> Stashed changes
       <p>{result}</p>
     </div>
   )

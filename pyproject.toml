@@ -6,7 +6,11 @@ authors = ["vvijay874 <vvijay@imsa.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
+<<<<<<< Updated upstream
 python = "^3.12"
+=======
+python = "^3.10"
+>>>>>>> Stashed changes
 
 
 [build-system]
