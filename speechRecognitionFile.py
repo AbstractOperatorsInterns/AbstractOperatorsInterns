@@ -58,3 +58,4 @@ def punctuate(unchangedText):
 
 text = r.recognize_google(audio_text)
 punctuate(text)
+
