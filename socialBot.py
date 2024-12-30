@@ -103,14 +103,14 @@ currentUser = None
 def members():
     message = request.json.get('input_data')   
     social_bot = user_dict.get(currentUser)
-    return jsonify({"result": "USER:" + social_bot.user + "Social Situation: " + social_bot.socialSit + " ******** \n " + social_bot.ask_openai(message)})
+    return jsonify({"result": social_bot.ask_openai(message)})
 
 @app.route("/signup", methods = ['POST'])
 def signup():
     global currentUser, user_dict
     user_dict.update({request.json.get('signup_data'): SocialBot(7, request.json.get('signup_data'))})
     currentUser = request.json.get('signup_data')
-    return jsonify({"result": "Thank you for signing up! Here is your username: " + request.json.get('signup_data')})
+    return jsonify({"result": user_dict.get(currentUser).socialSit})
 
 if __name__ == "__main__":
     app.run(debug=True)
