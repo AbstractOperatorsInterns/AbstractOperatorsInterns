@@ -23,11 +23,20 @@ function FileUpload() {
 
 
 function App() {
+<<<<<<< Updated upstream
   <Router>
       <Routes>
         <Route path="/file-upload" element={<FileUpload />} />
       </Routes>
     </Router>
+=======
+
+
+  const [inputData, setInputData] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [signUpData, setSignUpData] = useState('');
+  const [result2, setResult2] = useState('');
+>>>>>>> Stashed changes
 
   const [inputData, setInputData] = useState("")
   const [result, setResult] = useState("")
@@ -79,6 +88,19 @@ function App() {
     document.body.appendChild(button);
   };
   
+
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+
+  const handleFileUpload = (e) => {
+    // Clear the page content by setting the innerHTML of the body to an empty string
+    document.body.innerHTML = 'file upload';
+    const button = document.createElement('button');
+    button.innerHTML = 'social bot';
+    button.onclick = () =>{window.history.back()};
+    document.body.appendChild(button);
+  };
 
 >>>>>>> Stashed changes
   return (

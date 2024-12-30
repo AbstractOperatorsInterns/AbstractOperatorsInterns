@@ -211,10 +211,14 @@ def members():
     return jsonify({"result": "Social Situation: " + social_bot.socialSit + " ******** \n " + social_bot.ask_openai(message)})
 
 if __name__ == "__main__":
+<<<<<<< Updated upstream
     app.run(debug=True)
 <<<<<<< Updated upstream
 >>>>>>> Stashed changes
 >>>>>>> Stashed changes
 =======
     
+>>>>>>> Stashed changes
+=======
+    app.run(debug=True)
 >>>>>>> Stashed changes
