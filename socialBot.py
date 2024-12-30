@@ -11,11 +11,13 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
 import matplotlib.pyplot as plt
 
-
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-
+user_dict = {
+    'User': [],
+    'SocialBots': []
+}
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
