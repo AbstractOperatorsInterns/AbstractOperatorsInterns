@@ -15,26 +15,12 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 user_dict = {
-    'User': [],
-    'SocialBots': []
+    
 }
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-app = Flask(__name__)
-CORS(app)
-
-@app.route("/members", methods=['POST'])
-def members():
-    global scenario
-    message = request.json.get('input_data')   
-    print(message)
-    social_bot = SocialBot(7)
-    return jsonify({"result": "Social Situation: " + social_bot.socialSit + " ******** \n " + social_bot.ask_openai(message)})
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
 class SocialBot:
     def __init__(self, difficulty):
@@ -107,3 +93,22 @@ class SocialBot:
         
         except Exception as e:
             return f"Error: {str(e)}"
+
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/members", methods=['POST'])
+def members():
+    message = request.json.get('input_data')   
+    social_bot = SocialBot(7)
+    print("SLKDFJLSDKFJSLDKFJSLDKFJLSDKFJLSDKFJ")
+    return jsonify({"result": "Social Situation: " + social_bot.socialSit + " ******** \n " + social_bot.ask_openai(message)})
+
+@app.route("/signup", methods = ['POST'])
+def signup():
+    user_dict.update({request.json.get('signup_data'): SocialBot(7)})
+    return jsonify({"result": "Thank you for signing up! Here is your username: " + request.json.get('signup_data')})
+
+if __name__ == "__main__":
+    app.run(debug=True)
