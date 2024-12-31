@@ -6,20 +6,7 @@ authors = ["SVPandya <spandya@imsa.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-python = "^3.12"
-=======
 python = "^3.10"
->>>>>>> Stashed changes
-=======
-python = "^3.10"
->>>>>>> Stashed changes
-=======
-python = "^3.10"
->>>>>>> Stashed changes
-
 
 [build-system]
 requires = ["poetry-core"]

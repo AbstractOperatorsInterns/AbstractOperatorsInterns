@@ -1,141 +1,100 @@
-import React, {useState, useEffect} from 'react'
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from "react-router-dom";
-import axios from 'axios'
-<<<<<<< Updated upstream
-=======
-import { useNavigate } from 'react-router-dom';
->>>>>>> Stashed changes
-
-function FileUpload() {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <h1>Welcome to the File Upload Page</h1>
-    </div>
-  );
-}
-
+import React, { useState } from 'react';
+import axios from 'axios';
+import './App.css';
 
 function App() {
-<<<<<<< Updated upstream
-  <Router>
-      <Routes>
-        <Route path="/file-upload" element={<FileUpload />} />
-      </Routes>
-    </Router>
-=======
-
-
   const [inputData, setInputData] = useState('');
   const [messages, setMessages] = useState([]);
   const [signUpData, setSignUpData] = useState('');
   const [result2, setResult2] = useState('');
->>>>>>> Stashed changes
-
-  const [inputData, setInputData] = useState("")
-  const [result, setResult] = useState("")
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-  const navigate = useNavigate();
->>>>>>> Stashed changes
-=======
-  const [signUpData, setSignUpData] = useState("")
-  const [result2, setResult2] = useState("")
-  // const navigate = useNavigate();
->>>>>>> Stashed changes
+  const [currentPage, setCurrentPage] = useState('chat');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    const userMessage = { type: 'user', text: inputData };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
     try {
       const response = await axios.post('http://localhost:5000/members', {
-        input_data: inputData
-      })
-      setResult(response.data.result)
+        input_data: inputData,
+      });
+      const aiMessage = { type: 'AI', text: response.data.result };
+      setMessages((prevMessages) => [...prevMessages, aiMessage]);
     } catch (error) {
-      console.error("Error running function:", error)
-      setResult("An error occurred. Please try again.")
+      console.error('Error running function:', error);
+      const errorMessage = { type: 'AI', text: 'An error occurred. Please try again.' };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
     }
-  }
-<<<<<<< Updated upstream
-=======
+  };
 
-
-  const fileUpload = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    navigate('/file-upload'); 
-  }
 
-<<<<<<< Updated upstream
-
-
-
->>>>>>> Stashed changes
-  
-=======
-  const handleFileUpload = (e) => {
-    // Clear the page content by setting the innerHTML of the body to an empty string
-    document.body.innerHTML = 'file upload';
-    const button = document.createElement('button');
-    button.innerHTML = 'social bot';
-    button.onclick = () =>{window.history.back()};
-    document.body.appendChild(button);
-  };
-  
-
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
-
-  const handleFileUpload = (e) => {
-    // Clear the page content by setting the innerHTML of the body to an empty string
-    document.body.innerHTML = 'file upload';
-    const button = document.createElement('button');
-    button.innerHTML = 'social bot';
-    button.onclick = () =>{window.history.back()};
-    document.body.appendChild(button);
+    try {
+      const response = await axios.post('http://localhost:5000/signup', {
+        signup_data: signUpData,
+      });
+      setResult2(response.data.result);
+    } catch (error) {
+      console.error('Error running function:', error);
+      setResult2('An error occurred. Please try again.');
+    }
   };
 
->>>>>>> Stashed changes
+  const handleFileUpload = () => {
+    setCurrentPage('file-upload'); 
+  };
+
+  const handleGoBack = () => {
+    setCurrentPage('chat');
+  };
+
   return (
-    
-    <div>
-      <textarea
-        id="message"
-        rows={4}
-        className="w-full px-3 py-2 text-gray-700 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-        placeholder="Enter response..."
-        value={inputData}
-        onChange={(e) => setInputData(e.target.value)}
-      ></textarea>
-      <button onClick={handleSubmit}> Hello!!</button>
-<<<<<<< Updated upstream
-=======
-      <button onClick={fileUpload}>File upload page</button>
->>>>>>> Stashed changes
-      <p>{result}</p>
-<<<<<<< Updated upstream
-=======
-      <textarea
-        id="message2"
-        rows={4}
-        className="w-full px-3 py-2 text-gray-700 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-        placeholder="Enter username..."
-        value={signUpData}
-        onChange={(e) => setSignUpData(e.target.value)}
-      ></textarea>
-      <button onClick={handleSignUp}>Sign up!</button>
-      <button onClick={handleFileUpload}>Go to File Upload</button>
-      <p>{result2}</p>
->>>>>>> Stashed changes
+    <div className="chat-container">
+      {currentPage === 'file-upload' ? (
+        <div>
+          <h1>File Upload Page</h1>
+          <button onClick={handleGoBack}>Social Bot</button>
+        </div>
+      ) : (
+        // Chat Page
+        <div>
+          <div className="chat-box">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`chat-bubble ${message.type === 'user' ? 'user-bubble' : 'ai-bubble'}`}
+              >
+                {message.text}
+              </div>
+            ))}
+          </div>
+
+          <textarea
+            id="message"
+            rows={4}
+            className="w-full px-3 py-2 text-gray-700 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            placeholder="Enter response..."
+            value={inputData}
+            onChange={(e) => setInputData(e.target.value)}
+          ></textarea>
+          <button onClick={handleSubmit}>Talk With Social Bot!</button>
+
+          <textarea
+            id="message2"
+            rows={4}
+            className="w-full px-3 py-2 text-gray-700 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            placeholder="Enter username..."
+            value={signUpData}
+            onChange={(e) => setSignUpData(e.target.value)}
+          ></textarea>
+          <button onClick={handleSignUp}>Sign up!</button>
+          <button onClick={handleFileUpload}>File Upload</button>
+          <p>{result2}</p>
+        </div>
+      )}
     </div>
   );
 }
 
-export default App
+export default App;
