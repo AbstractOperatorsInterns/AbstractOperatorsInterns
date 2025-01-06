@@ -21,6 +21,7 @@ user_dict = {
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+
 class SocialBot:
     def __init__(self, difficulty, username):
         self.memory = self.generate_social_scenario(difficulty)
@@ -108,9 +109,21 @@ def members():
 @app.route("/signup", methods = ['POST'])
 def signup():
     global currentUser, user_dict
-    user_dict.update({request.json.get('signup_data'): SocialBot(7, request.json.get('signup_data'))})
     currentUser = request.json.get('signup_data')
+    for x in list(user_dict.keys()):
+        if x == currentUser:
+            return jsonify({"result": "That user already exists! Try again!"})
+    user_dict.update({request.json.get('signup_data'): SocialBot(7, request.json.get('signup_data'))})
     return jsonify({"result": user_dict.get(currentUser).socialSit})
+
+@app.route("/login", methods = ['POST'])
+def login():
+    global currentUser, user_dict
+    for x in list(user_dict.keys()):
+        if x == request.json.get('login_data'):
+            currentUser = request.json.get('login_data')
+            return jsonify({"result": f"Login successful! Current user: {currentUser}", "socialSit": user_dict.get(currentUser).socialSit})
+    return jsonify({"result": "Login unsuccessful! No user found!"})
 
 if __name__ == "__main__":
     app.run(debug=True)

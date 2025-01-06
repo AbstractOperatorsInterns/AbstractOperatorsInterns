@@ -6,11 +6,11 @@ function App() {
   const [inputData, setInputData] = useState('');
   const [messages, setMessages] = useState([]);
   const [signUpData, setSignUpData] = useState('');
-  const [result2, setResult2] = useState('');
+  const [logInData, setLogInData] = useState('');
+  const [loginresponse, setLoginResponse] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const userMessage = { type: 'user', text: inputData };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     try {
@@ -28,15 +28,28 @@ function App() {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axios.post('http://localhost:5000/signup', {
         signup_data: signUpData,
       });
-      setResult2(response.data.result);
+      const aiMessage = { type: 'AI', text: response.data.result};
+      setMessages([aiMessage]);
     } catch (error) {
       console.error('Error running function:', error);
-      setResult2('An error occurred. Please try again.');
+    }
+  };
+
+  const handleLogIn = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5000/login', {
+        login_data: logInData,
+      });
+      setLoginResponse(response.data.result)
+      const aiMessage = { type: 'AI', text: response.data.socialSit};
+      setMessages([aiMessage]);
+    } catch (error) {
+      console.error('Error running function:', error);
     }
   };
 
@@ -72,7 +85,17 @@ function App() {
         onChange={(e) => setSignUpData(e.target.value)}
       ></textarea>
       <button onClick={handleSignUp}>Sign up!</button>
-      <p>{result2}</p>
+
+      <textarea
+        id="message3"
+        rows={4}
+        className="w-full px-3 py-2 text-gray-700 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+        placeholder="Enter username to login..."
+        value={logInData}
+        onChange={(e) => setLogInData(e.target.value)}
+      ></textarea>
+      <button onClick={handleLogIn}>Log in!</button>
+      <p>{loginresponse}</p>
     </div>
   );
 }
