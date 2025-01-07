@@ -11,37 +11,24 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
 import matplotlib.pyplot as plt
 
-
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-
+user_dict = {
+    
+}
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-app = Flask(__name__)
-CORS(app)
-
-@app.route("/members", methods=['POST'])
-def members():
-    global scenario
-    message = request.json.get('input_data')   
-    print(message)
-    social_bot = SocialBot(7)
-    return jsonify({"result": "Social Situation: " + social_bot.socialSit + " ******** \n " + social_bot.ask_openai(message)})
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
 class SocialBot:
-    def __init__(self, difficulty):
+    def __init__(self, difficulty, username):
         self.memory = self.generate_social_scenario(difficulty)
         self.socialSit = self.memory
         self.numAsks = 0
         self.ratings = []
+        self.user = username
         
-
     def ask_openai(self, user_response):
         if self.numAsks < 10:
             prompt = f"Critique this user's newest response based on the conversation you have had with them so far. Here is a transcript of prior responses and feedback: {self.memory}. The user's latest response is: {user_response}. Then rate their response out of 100. Do not include a transcript of previous responses in your response."
@@ -105,3 +92,25 @@ class SocialBot:
         
         except Exception as e:
             return f"Error: {str(e)}"
+
+
+app = Flask(__name__)
+CORS(app)
+
+currentUser = None
+
+@app.route("/members", methods=['POST'])
+def members():
+    message = request.json.get('input_data')   
+    social_bot = user_dict.get(currentUser)
+    return jsonify({"result": social_bot.ask_openai(message)})
+
+@app.route("/signup", methods = ['POST'])
+def signup():
+    global currentUser, user_dict
+    user_dict.update({request.json.get('signup_data'): SocialBot(7, request.json.get('signup_data'))})
+    currentUser = request.json.get('signup_data')
+    return jsonify({"result": user_dict.get(currentUser).socialSit})
+
+if __name__ == "__main__":
+    app.run(debug=True)
