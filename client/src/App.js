@@ -1,124 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import FileUpload from './pages/FileUpload'
+import SocialBot from './pages/SocialBot'
 import axios from 'axios';
 import './App.css';
 
 function App() {
-  const [inputData, setInputData] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [signUpData, setSignUpData] = useState('');
-  const [logInData, setLogInData] = useState('');
-  const [loginresponse, setLoginResponse] = useState('')
-  const [currentPage, setCurrentPage] = useState('chat');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const userMessage = { type: 'user', text: inputData };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
-    try {
-      const response = await axios.post('http://localhost:5000/members', {
-        input_data: inputData,
-      });
-      const aiMessage = { type: 'AI', text: response.data.result };
-      setMessages((prevMessages) => [...prevMessages, aiMessage]);
-    } catch (error) {
-      console.error('Error running function:', error);
-      const errorMessage = { type: 'AI', text: 'An error occurred. Please try again.' };
-      setMessages((prevMessages) => [...prevMessages, errorMessage]);
-    }
-  };
-
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:5000/signup', {
-        signup_data: signUpData,
-      });
-      const aiMessage = { type: 'AI', text: response.data.result};
-      setMessages([aiMessage]);
-    } catch (error) {
-      console.error('Error running function:', error);
-    }
-  };
-
-  const handleLogIn = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:5000/login', {
-        login_data: logInData,
-      });
-      setLoginResponse(response.data.result)
-      const aiMessage = { type: 'AI', text: response.data.socialSit};
-      setMessages([aiMessage]);
-    } catch (error) {
-      console.error('Error running function:', error);
-    }
-  };
-
-  const handleFileUpload = () => {
-    setCurrentPage('file-upload'); 
-  };
-
-  const handleGoBack = () => {
-    setCurrentPage('chat');
-  };
 
   return (
-    <div className="chat-container">
-      {currentPage === 'file-upload' ? (
-        <div>
-          <h1>File Upload Page</h1>
-          <button onClick={handleGoBack}>Social Bot</button>
-        </div>
-      ) : (
-        // Chat Page
-        <div>
-          <div className="chat-box">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`chat-bubble ${message.type === 'user' ? 'user-bubble' : 'ai-bubble'}`}
-              >
-                {message.text}
-              </div>
-            ))}
-          </div>
-
-        <textarea
-          id="message"
-          rows={4}
-          className="w-full px-3 py-2 text-gray-700 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          placeholder="Enter response..."
-          value={inputData}
-          onChange={(e) => setInputData(e.target.value)}
-        ></textarea>
-        <button onClick={handleSubmit}>Talk With Social Bot!</button>
-
-        <textarea
-          id="message2"
-          rows={4}
-          className="w-full px-3 py-2 text-gray-700 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          placeholder="Enter username..."
-          value={signUpData}
-          onChange={(e) => setSignUpData(e.target.value)}
-        ></textarea>
-        <button onClick={handleSignUp}>Sign up!</button>
-
-        <textarea
-          id="message3"
-          rows={4}
-          className="w-full px-3 py-2 text-gray-700 border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          placeholder="Enter username to login..."
-          value={logInData}
-          onChange={(e) => setLogInData(e.target.value)}
-        ></textarea>
-        <button onClick={handleLogIn}>Log in!</button>
-        <p>{loginresponse}</p>
-        <button onClick={handleFileUpload}>File Upload</button>
-        </div>
-      )}
-    </div>
-    
+    <div className="App">
+      <BrowserRouter>
+        <Routes>
+          <Route path='/files' element={<FileUpload />} />
+          <Route path='/socialBot' element={<SocialBot />} />
+        </Routes>
+      </BrowserRouter>
+    </div> 
   );
 }
 
