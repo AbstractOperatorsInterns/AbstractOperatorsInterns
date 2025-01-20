@@ -141,10 +141,10 @@ from dotenv import load_dotenv
 import openai
 import subprocess
 
-# Initialize Flask app
-app = Flask(__name__)
-# CORS(app)
-CORS(app, resources={r"/*": {"origins": "https://localhost:3000"}})
+# # Initialize Flask app
+# app = Flask(__name__)
+# # CORS(app)
+# CORS(app, resources={r"/*": {"origins": "https://localhost:3000"}})
 
 # Environment variables and configurations
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
@@ -216,6 +216,18 @@ def punctuate(unchanged_text):
     except Exception as e:
         return {"error": f"OpenAI API error: {e}"}
 
+
+
+
+
+
+app = Flask(__name__)
+CORS(app)
+
+
+
+
+
 # Flask routes
 @app.route("/process_video", methods=["POST"])
 def video_endpoint():
@@ -280,18 +292,6 @@ def summarize_endpoint():
         return jsonify({"summary": summary})
     except Exception as e:
         return jsonify({"error": f"OpenAI API error: {e}"})
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
