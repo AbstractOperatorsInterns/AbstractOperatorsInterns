@@ -1,11 +1,8 @@
 import os
+import sqlite3
 from dotenv import load_dotenv, find_dotenv
 import openai
 from openai import OpenAI
-# Do this once and it will work from then on ↓
-# import nltk
-# nltk.download('punkt')
-# nltk.download('punkt_tab')
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
@@ -14,9 +11,15 @@ import matplotlib.pyplot as plt
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-user_dict = {
-    
-}
+socialBotArr = []
+
+connection = sqlite3.connect('user_information.db', check_same_thread=False)
+cursor = connection.cursor()
+command1 = """CREATE TABLE IF NOT EXISTS 
+users(username TEXT PRIMARY KEY, socialind INTEGER)"""
+cursor.execute(command1)
+cursor.execute("SELECT * FROM users")
+rows = cursor.fetchall()
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -41,7 +44,7 @@ class SocialBot:
                         {"role": "system", "content": "You are a therapist who can help socially awkward and autistic people and children. Provide constructive feedback on their responses based on the conversation you've had with them so far."},
                         {"role": "user", "content": prompt}
                     ],
-                    temperature=0.7
+                    temperature=0.3
                 )
                 self.numAsks += 1
                 ai_response = response.choices[0].message.content
@@ -54,7 +57,7 @@ class SocialBot:
             return "Out of responses! Either start a new session or reset the memory."
     
     def generate_social_scenario(self, difficulty):
-        prompt = f"Create a social scenario for a person with social anxiety or autism. Make the scenario have a {difficulty}/10 level of difficulty."
+        prompt = f"Create a unique but applicable social scenario for a person with social anxiety or autism. Make the scenario have a {difficulty}/10 level of difficulty."
         try:
             client = OpenAI(api_key = os.environ.get("OPENAI_API_KEY"))
             response = client.chat.completions.create(
@@ -63,7 +66,7 @@ class SocialBot:
                     {"role": "system", "content": "You are a therapist who can give social scenarios to individuals working to improve social skills."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.7
+                temperature=1
             )
             scenario = response.choices[0].message.content
             return scenario
@@ -102,27 +105,36 @@ currentUser = None
 
 @app.route("/members", methods=['POST'])
 def members():
+    global rows
     message = request.json.get('input_data')   
-    social_bot = user_dict.get(currentUser)
+    social_bot = None
+    for x in rows:
+        if x[0] == currentUser:
+            social_bot = socialBotArr[x[1]]
     return jsonify({"result": social_bot.ask_openai(message)})
 
 @app.route("/signup", methods = ['POST'])
 def signup():
-    global currentUser, user_dict
-    currentUser = request.json.get('signup_data')
-    for x in list(user_dict.keys()):
-        if x == currentUser:
+    global currentUser, rows
+    potUser = request.json.get('signup_data')
+    for x in rows:
+        if x[0] == potUser:
             return jsonify({"result": "That user already exists! Try again!"})
-    user_dict.update({request.json.get('signup_data'): SocialBot(7, request.json.get('signup_data'))})
-    return jsonify({"result": user_dict.get(currentUser).socialSit})
+    currentUser = potUser
+    cursor.execute(f"INSERT INTO users VALUES ('{currentUser}', {len(socialBotArr)})")
+    cursor.execute("SELECT * FROM users")
+    rows = cursor.fetchall()
+    socialBotArr.append(SocialBot(7, request.json.get('signup_data')))
+    return jsonify({"result": socialBotArr[len(socialBotArr)-1].socialSit})
 
 @app.route("/login", methods = ['POST'])
 def login():
-    global currentUser, user_dict
-    for x in list(user_dict.keys()):
-        if x == request.json.get('login_data'):
+    global currentUser, rows
+    for x in rows:
+        if x[0] == request.json.get('login_data'):
             currentUser = request.json.get('login_data')
-            return jsonify({"result": f"Login successful! Current user: {currentUser}", "socialSit": user_dict.get(currentUser).socialSit})
+            return jsonify({"result": f"Login successful! Current user: {currentUser}", "socialSit": socialBotArr[x[1]].socialSit})
+
     return jsonify({"result": "Login unsuccessful! No user found!"})
 
 if __name__ == "__main__":

@@ -39,7 +39,6 @@ function SocialBot() {
         console.error('Error running function:', error);
       }
     };
-  
     const handleLogIn = async (e) => {
       e.preventDefault();
       try {
