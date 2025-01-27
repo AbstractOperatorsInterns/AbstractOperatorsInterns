@@ -11,27 +11,33 @@ import matplotlib.pyplot as plt
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-socialBotArr = []
-
 connection = sqlite3.connect('user_information.db', check_same_thread=False)
 cursor = connection.cursor()
-command1 = """CREATE TABLE IF NOT EXISTS 
-users(username TEXT PRIMARY KEY, socialind INTEGER)"""
+command1 = """CREATE TABLE IF NOT EXISTS
+allusers(username TEXT PRIMARY KEY, socialSit TEXT, memory TEXT)"""
 cursor.execute(command1)
-cursor.execute("SELECT * FROM users")
-rows = cursor.fetchall()
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 class SocialBot:
-    def __init__(self, difficulty, username):
-        self.memory = self.generate_social_scenario(difficulty)
-        self.socialSit = self.memory
+    def __init__(self, difficulty:int, username:str, socialSit, memory):
+        if (socialSit == ""):
+            self.memory = self.generate_social_scenario(difficulty)
+            self.socialSit = self.memory
+        else:
+            self.memory = memory
+            self.socialSit = socialSit
         self.numAsks = 0
         self.ratings = []
         self.user = username
+    
+    def setSocialSit(self, socialSit):
+        self.socialSit = socialSit
+    
+    def setMem(self, memory):
+        self.memory = memory
         
     def ask_openai(self, user_response):
         if self.numAsks < 10:
@@ -102,39 +108,47 @@ app = Flask(__name__)
 CORS(app)
 
 currentUser = None
+currentObj = None
 
 @app.route("/members", methods=['POST'])
 def members():
-    global rows
-    message = request.json.get('input_data')   
-    social_bot = None
-    for x in rows:
-        if x[0] == currentUser:
-            social_bot = socialBotArr[x[1]]
-    return jsonify({"result": social_bot.ask_openai(message)})
+    global currentObj
+    message = request.json.get('input_data')
+    if currentObj != None:
+        return jsonify({"result": currentObj.ask_openai(message)})
+    else:
+        return jsonify({"result": "Log in first!"})
 
 @app.route("/signup", methods = ['POST'])
 def signup():
-    global currentUser, rows
+    global currentUser, currentObj
     potUser = request.json.get('signup_data')
+    cursor.execute("SELECT * FROM allusers")
+    rows = cursor.fetchall()
     for x in rows:
         if x[0] == potUser:
             return jsonify({"result": "That user already exists! Try again!"})
+    if currentObj != None and currentUser != None:
+        cursor.execute(f"UPDATE allusers SET socialSit = '{currentObj.socialSit}', memory = '{currentObj.memory}' WHERE username = '{currentUser}'")
     currentUser = potUser
-    cursor.execute(f"INSERT INTO users VALUES ('{currentUser}', {len(socialBotArr)})")
-    cursor.execute("SELECT * FROM users")
-    rows = cursor.fetchall()
-    socialBotArr.append(SocialBot(7, request.json.get('signup_data')))
-    return jsonify({"result": socialBotArr[len(socialBotArr)-1].socialSit})
+    currentObj = SocialBot(8, currentUser, "", "")
+    cursor.execute("INSERT INTO allusers (username, socialSit, memory) VALUES (?, ?, ?)",
+        (currentUser, currentObj.socialSit, currentObj.memory))
+    
+
+    return jsonify({"result": currentObj.socialSit})
 
 @app.route("/login", methods = ['POST'])
 def login():
-    global currentUser, rows
+    global currentUser, currentObj
+    cursor.execute("SELECT * FROM allusers")
+    rows = cursor.fetchall()
     for x in rows:
         if x[0] == request.json.get('login_data'):
+            cursor.execute(f"UPDATE allusers SET socialSit = '{currentObj.socialSit}', memory = '{currentObj.memory}' WHERE username = '{currentUser}'")
             currentUser = request.json.get('login_data')
-            return jsonify({"result": f"Login successful! Current user: {currentUser}", "socialSit": socialBotArr[x[1]].socialSit})
-
+            currentObj = SocialBot(8, currentUser, x[1], x[2])
+            return jsonify({"result": f"Login successful! Current user: {currentUser}", "socialSit": currentObj.socialSit})
     return jsonify({"result": "Login unsuccessful! No user found!"})
 
 if __name__ == "__main__":
