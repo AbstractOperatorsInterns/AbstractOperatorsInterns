@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
+
 function App() {
   const [inputData, setInputData] = useState('');
   const [messages, setMessages] = useState([]);
@@ -27,6 +28,32 @@ function App() {
     }
   };
 
+  const detEmotion = async () => {
+    const fileInput = document.getElementById('vidUpload');
+    const file = fileInput.files[0];
+
+    console.log("found file!");
+    const data = new FormData();
+    data.append("video", file);
+    console.log("File details:", file);
+    console.log("FormData:", [...data.entries()]);
+
+
+    try {
+      const response = await axios.post('http://localhost:5001/process_video', data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Video processed successfully:", response.data);
+      alert(JSON.stringify(response.data));
+    } catch (error) {
+      console.error("Error processing video:", error);
+      alert("An error occurred. Please try again.");
+    }
+  };
+
+
   const handleSignUp = async (e) => {
     e.preventDefault();
 
@@ -42,7 +69,7 @@ function App() {
   };
 
   const handleFileUpload = () => {
-    setCurrentPage('file-upload'); 
+    setCurrentPage('file-upload');
   };
 
   const handleGoBack = () => {
@@ -54,6 +81,8 @@ function App() {
       {currentPage === 'file-upload' ? (
         <div>
           <h1>File Upload Page</h1>
+          <input type="file" id="vidUpload" accept="video/*"></input>
+          <button type="submit" onClick={detEmotion}>Submit</button>
           <button onClick={handleGoBack}>Social Bot</button>
         </div>
       ) : (

@@ -1,6 +1,10 @@
 venv
 */node_modules/
 
+quizVideo.mp4
+quizVideo.WAV
+uploaded_video.mp4
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 __pycache__
