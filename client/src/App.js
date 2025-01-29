@@ -28,20 +28,6 @@ function App() {
     }
   };
 
-
-  // const detEmotion = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const response = await axios.post('http://localhost:5001/summarize', {
-  //       // signup_data: signUpData,
-  //     });
-  //     setResult2(response.data.result);
-  //   } catch (error) {
-  //     console.error('Error running function:', error);
-  //     setResult2('An error occurred. Please try again.');
-  //   }
-  // };
   const detEmotion = async () => {
     const fileInput = document.getElementById('vidUpload');
     const file = fileInput.files[0];
@@ -66,9 +52,6 @@ function App() {
       alert("An error occurred. Please try again.");
     }
   };
-
-
-
 
 
   const handleSignUp = async (e) => {
