@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './pages.css';
 
 function SocialBot() {
     const [inputData, setInputData] = useState('');
@@ -97,6 +96,7 @@ function SocialBot() {
           ></textarea>
           <button onClick={handleLogIn}>Log in!</button>
           <p>{loginresponse}</p>
+          <p className='text-red-700'>HELLOO</p>
           </div>  
       </div>
       

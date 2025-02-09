@@ -4,6 +4,8 @@ import FileUpload from './pages/FileUpload'
 import SocialBot from './pages/SocialBot'
 import axios from 'axios';
 import './App.css';
+import './input.css';
+
 
 function App() {
 
