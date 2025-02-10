@@ -9,6 +9,7 @@ function App() {
   const [signUpData, setSignUpData] = useState('');
   const [result2, setResult2] = useState('');
   const [currentPage, setCurrentPage] = useState('chat');
+  const [videoResponse, setVideoResponse] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,6 +48,8 @@ function App() {
       });
       console.log("Video processed successfully:", response.data);
       alert(JSON.stringify(response.data));
+      console.log("Video processed successfully:", response.data);
+      setVideoResponse(response.data);
     } catch (error) {
       console.error("Error processing video:", error);
       alert("An error occurred. Please try again.");
@@ -84,6 +87,7 @@ function App() {
           <input type="file" id="vidUpload" accept="video/*"></input>
           <button type="submit" onClick={detEmotion}>Submit</button>
           <button onClick={handleGoBack}>Social Bot</button>
+
         </div>
       ) : (
         // Chat Page

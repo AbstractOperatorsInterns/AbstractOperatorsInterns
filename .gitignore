@@ -4,6 +4,7 @@ venv
 quizVideo.mp4
 quizVideo.WAV
 uploaded_video.mp4
+uploaded_video.WAV
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
