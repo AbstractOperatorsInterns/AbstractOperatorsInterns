@@ -17,14 +17,14 @@ function Home() {
                 <img src="/old-people.png" alt="Elderly person using computer" className="rounded-lg shadow-md w-full max-w-[500px] mx-auto" />
               </div>
               <div className="flex flex-col justify-center">
-                <h3 className="text-3xl font-bold mb-4 text-purple-900">INSERT INFORMATION HERE</h3>
+                <h3 className="text-3xl font-bold mb-4 text-emerald-600">INSERT INFORMATION HERE</h3>
                 <p className="text-lg mb-4">
                     INSERT INFORMATION HERE
                 </p>
                 <p className="text-lg mb-4">
                     INSERT INFORMATION HERE
                 </p>
-                <p className="text-lg font-semibold text-violet-950">
+                <p className="text-lg font-semibold text-emerald-600">
                     Insert Inforamtion here
                 </p>
               </div>
@@ -33,7 +33,7 @@ function Home() {
         </div>
         <div className="bg-white rounded-lg shadow-md border border-purple-200 w-full">
           <div className="border-b border-purple-100 p-6">
-            <h2 className="text-2xl font-semibold text-purple-900">Insert Information here</h2>
+            <h2 className="text-2xl font-semibold text-emerald-600">Insert Information here</h2>
             <p className="text-gray-600 mt-1">Insert Information Here</p>
           </div>
         </div>
