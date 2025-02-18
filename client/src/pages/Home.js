@@ -6,17 +6,17 @@ function Home() {
       <div>
         <video src={"/gradient-video.mp4"} loop autoPlay muted></video>
         <div 
-          className="absolute inset-0 bg-white opacity-100 h-[865px]" 
+          className="absolute inset-0 bg-white opacity-100 h-[875px]" 
           style={{ 
             clipPath: "polygon(0% 100%, 100% 50%, 100% 100%)"
           }}
         />
         <div className="absolute top-3/4 left-10 transform -translate-y-1/2 w-5/6 flex items-center justify-between h-[650px]">
           <div className="w-3/4">
-            <p className="text-4xl leading-none">Welcome to</p>
+            <p className="text-4xl leading-none text-white">Welcome to</p>
             <h1 className="text-[11rem] font-bold mb-4 leading-tight bg-gradient-to-r from-blue-400 via-teal-400 to-emerald-400 text-transparent bg-clip-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">SocialHelp</h1>
-            <p className="text-3xl font-bold text-black">
-              <span className="text-white">Your comprehensive tool</span> <span className="bg-gradient-to-r from-blue-400 via-teal-400 to-emerald-400 text-transparent bg-clip-text">for training social awkwardness!</span>
+            <p className="text-3xl font-bold">
+              <span className="text-white">Your comprehensive tool for </span> <span className="bg-gradient-to-r from-blue-400 via-teal-400 to-emerald-400 text-transparent bg-clip-text">training social awkwardness!</span>
             </p>
           </div>
           <div className="w-1/3 flex justify-center ml-5 ">
