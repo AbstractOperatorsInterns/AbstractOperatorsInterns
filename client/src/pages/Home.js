@@ -11,6 +11,12 @@ function Home() {
             clipPath: "polygon(0% 100%, 100% 50%, 100% 100%)"
           }}
         />
+        <div className="absolute top-3/4 left-10 transform -translate-y-1/2 w-2/3 text-left text-white">
+        <h1 className="text-9xl font-bold mb-4">Welcome to INSERT NAME HERE</h1>
+        <p className="text-lg">
+          MORE STUFF HERE
+        </p>
+      </div>
       </div>
       <div className="relative w-full h-[650px] bg-cover bg-center">
         <div className="absolute inset-0  flex flex-col justify-center items-center text-white">
