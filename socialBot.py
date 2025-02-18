@@ -1,11 +1,8 @@
 import os
+import sqlite3
 from dotenv import load_dotenv, find_dotenv
 import openai
 from openai import OpenAI
-# Do this once and it will work from then on ↓
-# import nltk
-# nltk.download('punkt')
-# nltk.download('punkt_tab')
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
@@ -14,20 +11,33 @@ import matplotlib.pyplot as plt
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-user_dict = {
-    
-}
+connection = sqlite3.connect('user_information.db', check_same_thread=False)
+cursor = connection.cursor()
+command1 = """CREATE TABLE IF NOT EXISTS
+allusers(username TEXT PRIMARY KEY, socialSit TEXT, memory TEXT)"""
+cursor.execute(command1)
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+
 class SocialBot:
-    def __init__(self, difficulty, username):
-        self.memory = self.generate_social_scenario(difficulty)
-        self.socialSit = self.memory
+    def __init__(self, difficulty:int, username:str, socialSit, memory):
+        if (socialSit == ""):
+            self.memory = self.generate_social_scenario(difficulty)
+            self.socialSit = self.memory
+        else:
+            self.memory = memory
+            self.socialSit = socialSit
         self.numAsks = 0
         self.ratings = []
         self.user = username
+    
+    def setSocialSit(self, socialSit):
+        self.socialSit = socialSit
+    
+    def setMem(self, memory):
+        self.memory = memory
         
     def ask_openai(self, user_response):
         if self.numAsks < 10:
@@ -40,7 +50,7 @@ class SocialBot:
                         {"role": "system", "content": "You are a therapist who can help socially awkward and autistic people and children. Provide constructive feedback on their responses based on the conversation you've had with them so far."},
                         {"role": "user", "content": prompt}
                     ],
-                    temperature=0.7
+                    temperature=0.3
                 )
                 self.numAsks += 1
                 ai_response = response.choices[0].message.content
@@ -53,7 +63,7 @@ class SocialBot:
             return "Out of responses! Either start a new session or reset the memory."
     
     def generate_social_scenario(self, difficulty):
-        prompt = f"Create a social scenario for a person with social anxiety or autism. Make the scenario have a {difficulty}/10 level of difficulty."
+        prompt = f"Create a unique but applicable social scenario for a person with social anxiety or autism. Make the scenario have a {difficulty}/10 level of difficulty."
         try:
             client = OpenAI(api_key = os.environ.get("OPENAI_API_KEY"))
             response = client.chat.completions.create(
@@ -62,7 +72,7 @@ class SocialBot:
                     {"role": "system", "content": "You are a therapist who can give social scenarios to individuals working to improve social skills."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.7
+                temperature=1
             )
             scenario = response.choices[0].message.content
             return scenario
@@ -98,19 +108,48 @@ app = Flask(__name__)
 CORS(app)
 
 currentUser = None
+currentObj = None
 
 @app.route("/members", methods=['POST'])
 def members():
-    message = request.json.get('input_data')   
-    social_bot = user_dict.get(currentUser)
-    return jsonify({"result": social_bot.ask_openai(message)})
+    global currentObj
+    message = request.json.get('input_data')
+    if currentObj != None:
+        return jsonify({"result": currentObj.ask_openai(message)})
+    else:
+        return jsonify({"result": "Log in first!"})
 
 @app.route("/signup", methods = ['POST'])
 def signup():
-    global currentUser, user_dict
-    user_dict.update({request.json.get('signup_data'): SocialBot(7, request.json.get('signup_data'))})
-    currentUser = request.json.get('signup_data')
-    return jsonify({"result": user_dict.get(currentUser).socialSit})
+    global currentUser, currentObj
+    potUser = request.json.get('signup_data')
+    cursor.execute("SELECT * FROM allusers")
+    rows = cursor.fetchall()
+    for x in rows:
+        if x[0] == potUser:
+            return jsonify({"result": "That user already exists! Try again!"})
+    if currentObj != None and currentUser != None:
+        cursor.execute(f"UPDATE allusers SET socialSit = '{currentObj.socialSit}', memory = '{currentObj.memory}' WHERE username = '{currentUser}'")
+    currentUser = potUser
+    currentObj = SocialBot(8, currentUser, "", "")
+    cursor.execute("INSERT INTO allusers (username, socialSit, memory) VALUES (?, ?, ?)",
+        (currentUser, currentObj.socialSit, currentObj.memory))
+    
+
+    return jsonify({"result": currentObj.socialSit})
+
+@app.route("/login", methods = ['POST'])
+def login():
+    global currentUser, currentObj
+    cursor.execute("SELECT * FROM allusers")
+    rows = cursor.fetchall()
+    for x in rows:
+        if x[0] == request.json.get('login_data'):
+            cursor.execute(f"UPDATE allusers SET socialSit = '{currentObj.socialSit}', memory = '{currentObj.memory}' WHERE username = '{currentUser}'")
+            currentUser = request.json.get('login_data')
+            currentObj = SocialBot(8, currentUser, x[1], x[2])
+            return jsonify({"result": f"Login successful! Current user: {currentUser}", "socialSit": currentObj.socialSit})
+    return jsonify({"result": "Login unsuccessful! No user found!"})
 
 if __name__ == "__main__":
     app.run(debug=True)
