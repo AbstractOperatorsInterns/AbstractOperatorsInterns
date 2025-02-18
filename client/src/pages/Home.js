@@ -3,8 +3,17 @@ import React from 'react'
 function Home() {
   return (
     <div className="min-h-screen bg-white">
+      <div>
+        <video src={"/gradient-video.mp4"} loop autoPlay muted></video>
+        <div 
+          className="absolute inset-0 bg-white opacity-100 h-[865px]" 
+          style={{ 
+            clipPath: "polygon(0% 100%, 100% 50%, 100% 100%)"
+          }}
+        />
+      </div>
       <div className="relative w-full h-[650px] bg-cover bg-center">
-        <div className="absolute inset-0 bg-emerald-300 bg-opacity-70 flex flex-col justify-center items-center text-white">
+        <div className="absolute inset-0  flex flex-col justify-center items-center text-white">
           <h1 className="text-4xl font-bold mb-2 text-center md:text-7xl">Welcome to INSERT NAME HERE</h1>
           {/* Have this text rise in the future*/}
         </div>
