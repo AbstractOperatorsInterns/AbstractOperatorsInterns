@@ -11,6 +11,12 @@ opencv-python = "^4.10.0.84"
 speechrecognition = "^3.13.0"
 flask-cors = "^5.0.0"
 cors = "^1.0.1"
+python-dotenv = "^1.0.1"
+openai = "^1.63.2"
+matplotlib = "^3.10.0"
+tensorflow = "^2.18.0"
+deepface = "^0.0.93"
+tf-keras = "^2.18.0"
 
 [build-system]
 requires = ["poetry-core"]
