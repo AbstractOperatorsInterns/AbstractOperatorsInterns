@@ -7,6 +7,16 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+opencv-python = "^4.11.0.86"
+speechrecognition = "^3.14.1"
+flask-cors = "^5.0.1"
+cors = "^1.0.1"
+python-dotenv = "^1.0.1"
+openai = "^1.65.2"
+matplotlib = "^3.10.1"
+tensorflow = "^2.18.0"
+deepface = "^0.0.93"
+tf-keras = "^2.18.0"
 
 [build-system]
 requires = ["poetry-core"]

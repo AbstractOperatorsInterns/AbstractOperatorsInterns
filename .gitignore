@@ -150,6 +150,10 @@ venv.bak/
 
 # mkdocs documentation
 site/
+quizVideo.mp4
+quizVideo.WAV
+uploaded_video.mp4
+uploaded_video.WAV
 
 # mypy
 .mypy_cache/

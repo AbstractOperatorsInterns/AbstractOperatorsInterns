@@ -3,9 +3,6 @@ import sqlite3
 from dotenv import load_dotenv, find_dotenv
 import openai
 from openai import OpenAI
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.text_rank import TextRankSummarizer
 import matplotlib.pyplot as plt
 
 from flask import Flask, jsonify, request
