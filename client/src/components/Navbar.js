@@ -49,52 +49,56 @@ function Navbar() {
                         <li><a href="/about" className="hover:underline">About Us</a></li>
                     </ul>
                 </nav>
-                <button 
-                    className="flex items-center space-x-2 px-4 py-2 border border-white rounded-md hover:bg-white hover:text-teal-500 duration-300"
-                    onClick={() => setShowDropdown(!showDropdown)}
-                >
-                    Log In →
-                </button>
-                {showDropdown && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg p-4 border">
-                        <input
-                            type="text"
-                            className="w-full p-2 border rounded-md mb-2"
-                            placeholder="Enter username!"
-                            value={logInData}
-                            onChange={(e) => setLogInData(e.target.value)}
-                        />
-                        <button 
-                            className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                            onClick={handleLogIn}
-                        >
-                            Log in!
-                        </button>
-                        <p className="text-sm text-gray-600 mt-2">{loginResponse}</p>
-                    </div>
-                )}
-                <button 
-                    className="flex items-center space-x-2 px-4 py-2 border border-white rounded-md hover:bg-white hover:text-teal-500 duration-300"
-                    onClick={() => setShowDropdown2(!showDropdown2)}
-                >Sign Up →</button>
-                {showDropdown2 && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg p-4 border">
-                        <input
-                            type="text"
-                            className="w-full p-2 border rounded-md mb-2"
-                            placeholder="Enter new username!"
-                            value={signUpData}
-                            onChange={(e) => setSignUpData(e.target.value)}
-                        />
-                        <button 
-                            className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                            onClick={handleSignUp}
-                        >
-                            Sign up!
-                        </button>
-                        <p className="text-sm text-gray-600 mt-2">{loginResponse}</p>
-                    </div>
-                )}
+                <div className="relative">
+                    <button 
+                        className="flex items-center space-x-2 px-4 py-2 border border-white rounded-md hover:bg-white hover:text-teal-500 duration-300"
+                        onClick={() => setShowDropdown(!showDropdown)}
+                    >
+                        Log In →
+                    </button>
+                    {showDropdown && (
+                        <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg p-4 border">
+                            <input
+                                type="text"
+                                className="w-full p-2 border rounded-md mb-2"
+                                placeholder="Enter username!"
+                                value={logInData}
+                                onChange={(e) => setLogInData(e.target.value)}
+                            />
+                            <button 
+                                className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                                onClick={handleLogIn}
+                            >
+                                Log in!
+                            </button>
+                            <p className="text-sm text-gray-600 mt-2">{loginResponse}</p>
+                        </div>
+                    )}
+                </div>
+                <div className="relative">
+                    <button 
+                        className="flex items-center space-x-2 px-4 py-2 border border-white rounded-md hover:bg-white hover:text-teal-500 duration-300"
+                        onClick={() => setShowDropdown2(!showDropdown2)}
+                    >Sign Up →</button>
+                    {showDropdown2 && (
+                        <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg p-4 border">
+                            <input
+                                type="text"
+                                className="w-full p-2 border rounded-md mb-2"
+                                placeholder="Enter new username!"
+                                value={signUpData}
+                                onChange={(e) => setSignUpData(e.target.value)}
+                            />
+                            <button 
+                                className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                                onClick={handleSignUp}
+                            >
+                                Sign up!
+                            </button>
+                            <p className="text-sm text-gray-600 mt-2">{loginResponse}</p>
+                        </div>
+                    )}
+                </div>
             </div>
         </header>
     );
