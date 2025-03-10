@@ -49,10 +49,11 @@ function Navbar() {
                         <li><a href="/about" className="hover:underline">About Us</a></li>
                     </ul>
                 </nav>
-                <div className="relative">
+                <ul className="flex-grow flex space-x-8 justify-end">
+                    <li><div className="relative">
                     <button 
                         className="flex items-center space-x-2 px-4 py-2 border border-white rounded-md hover:bg-white hover:text-teal-500 duration-300"
-                        onClick={() => setShowDropdown(!showDropdown)}
+                        onClick={() => setShowDropdown(!showDropdown) && setShowDropdown2(false)}
                     >
                         Log In →
                     </button>
@@ -74,11 +75,12 @@ function Navbar() {
                             <p className="text-sm text-gray-600 mt-2">{loginResponse}</p>
                         </div>
                     )}
-                </div>
-                <div className="relative">
+                </div></li>
+                    <li><div className="relative">
                     <button 
                         className="flex items-center space-x-2 px-4 py-2 border border-white rounded-md hover:bg-white hover:text-teal-500 duration-300"
-                        onClick={() => setShowDropdown2(!showDropdown2)}
+                        onClick={() => setShowDropdown2(!showDropdown2) && setShowDropdown(false)}
+                       
                     >Sign Up →</button>
                     {showDropdown2 && (
                         <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg p-4 border">
@@ -98,7 +100,8 @@ function Navbar() {
                             <p className="text-sm text-gray-600 mt-2">{loginResponse}</p>
                         </div>
                     )}
-                </div>
+                </div></li>
+                </ul>
             </div>
         </header>
     );

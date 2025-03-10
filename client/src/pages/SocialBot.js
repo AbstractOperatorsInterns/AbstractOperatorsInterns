@@ -56,7 +56,6 @@ function SocialBot() {
       <div className="flex flex-col h-screen w-screen bg-gray-100">
       <div className="flex-grow flex flex-col w-full p-6">
           <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">SocialBot Chat</h2>
-          
           <div className="flex-grow overflow-y-auto border rounded-lg p-3 bg-gray-50">
               {messages.map((message, index) => (
                   <div
