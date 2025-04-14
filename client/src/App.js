@@ -10,15 +10,17 @@ import './input.css';
 
 function App() {
 
+  const [signupResponse, setSignupResponse] = useState('');
+
   return (
     <div className="App">
-      <Navbar />
+      <Navbar  setSignupResponse={setSignupResponse} signupResponse={signupResponse} />
       
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path='/files' element={<FileUpload />} />
-          <Route path='/socialBot' element={<SocialBot />} />
+          <Route path='/socialBot' element={<SocialBot signupResponse={signupResponse}/>} />
         </Routes>
       </BrowserRouter>
       <Footer />

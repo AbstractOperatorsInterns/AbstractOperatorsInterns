@@ -22,16 +22,14 @@ function Home() {
           </p>
         </div>
         <div className="w-full md:w-1/3 flex justify-center mt-6 md:mt-0">
-          <img src="/handPhone.png" alt="phone" className="max-w-full h-auto object-contain" />
+          {/* <img src="/handPhone.png" alt="phone" className="max-w-full h-auto object-contain" /> */}
         </div>
       </div>
       <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-md mb-8 border border-purple-200 w-full">
           <div className="border-b border-purple-100 p-6">
             <div className="grid md:grid-cols-2 gap-8 items-start">
-              <div className="w-full">
-                <img src="/old-people.png" alt="Elderly person using computer" className="rounded-lg shadow-md w-full max-w-[500px] mx-auto" />
-              </div>
+              
               <div className="flex flex-col justify-center">
                 <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-emerald-600">INSERT INFORMATION HERE</h3>
                 <p className="text-base sm:text-lg mb-4">INSERT INFORMATION HERE</p>

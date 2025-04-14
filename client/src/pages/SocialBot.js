@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function SocialBot() {
+function SocialBot({ signupResponse }) {
     const [inputData, setInputData] = useState('');
     const [messages, setMessages] = useState([]);
     const [signUpData, setSignUpData] = useState('');
     const [logInData, setLogInData] = useState('');
     const [loginResponse, setLoginResponse] = useState('')
+
+    useEffect(() => {
+      if (signupResponse) {
+        const socialSit = { type: 'AI', text: signupResponse };
+        setMessages([socialSit]);
+      }
+    }, [signupResponse]);
   
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -25,32 +32,6 @@ function SocialBot() {
         setMessages((prevMessages) => [...prevMessages, errorMessage]);
       }
     };
-  
-    const handleSignUp = async (e) => {
-      e.preventDefault();
-      try {
-        const response = await axios.post('http://localhost:5000/signup', {
-          signup_data: signUpData,
-        });
-        const aiMessage = { type: 'AI', text: response.data.result};
-        setMessages([aiMessage]);
-      } catch (error) {
-        console.error('Error running function:', error);
-      }
-    };
-    const handleLogIn = async (e) => {
-      e.preventDefault();
-      try {
-        const response = await axios.post('http://localhost:5000/login', {
-          login_data: logInData,
-        });
-        setLoginResponse(response.data.result)
-        const aiMessage = { type: 'AI', text: response.data.socialSit};
-        setMessages([aiMessage]);
-      } catch (error) {
-        console.error('Error running function:', error);
-      }
-    };
 
     return (
       <div className="flex flex-col h-screen w-screen bg-gray-100">
@@ -60,7 +41,7 @@ function SocialBot() {
               {messages.map((message, index) => (
                   <div
                       key={index}
-                      className={`p-3 my-2 max-w-xs rounded-lg text-sm ${message.type === 'user' ? 'bg-blue-500 text-white self-end ml-auto' : 'bg-gray-200 text-gray-700 mr-auto'}`}
+                      className={`p-3 my-2 max-w-[60rem] rounded-lg text-sm ${message.type === 'user' ? 'bg-blue-500 text-white self-end ml-auto' : 'bg-gray-200 text-gray-700 mr-auto'}`}
                   >
                       {message.text}
                   </div>

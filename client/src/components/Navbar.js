@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function Navbar() {
+function Navbar({ setSignupResponse, signupResponse }) {
     const [logInData, setLogInData] = useState('');
     const [loginResponse, setLoginResponse] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
@@ -24,22 +24,20 @@ function Navbar() {
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
-          const response = await axios.post('http://localhost:5000/signup', {
-            signup_data: signUpData,
-          });
-        //   const aiMessage = { type: 'AI', text: response.data.result};
-        //   setMessages([aiMessage]);
-        // FIGURE THIS OUT LATER!!
+            const response = await axios.post('http://localhost:5000/signup', {
+                signup_data: signUpData,
+            });
+            setSignupResponse(response.data.result);  // from props
         } catch (error) {
-          console.error('Error running function:', error);
+            console.error('Error:', error);
         }
-      };
+    };
 
     return (
-        <header className="bg-gradient-to-r from-blue-400 via-teal-400 to-emerald-500 text-white p-4">
+        <header className="z-50 bg-gradient-to-r from-blue-400 via-teal-400 to-emerald-500 text-white p-4">
             <div className="container mx-auto flex items-center justify-between relative">
                 <div className="flex items-center">
-                    <h1 className="text-2xl font-bold">Company Name here</h1>
+                    <h1 className="text-2xl font-bold">SocialHelp</h1>
                 </div>
                 <nav className="flex-grow flex justify-center">
                     <ul className="flex space-x-8">
@@ -53,12 +51,15 @@ function Navbar() {
                     <li><div className="relative">
                     <button 
                         className="flex items-center space-x-2 px-4 py-2 border border-white rounded-md hover:bg-white hover:text-teal-500 duration-300"
-                        onClick={() => setShowDropdown(!showDropdown) && setShowDropdown2(false)}
+                        onClick={() => {
+                            setShowDropdown(!showDropdown);
+                            setShowDropdown2(false);
+                        }}
                     >
                         Log In →
                     </button>
                     {showDropdown && (
-                        <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg p-4 border">
+                        <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg p-4 border z-50">
                             <input
                                 type="text"
                                 className="w-full p-2 border rounded-md mb-2"
@@ -79,11 +80,14 @@ function Navbar() {
                     <li><div className="relative">
                     <button 
                         className="flex items-center space-x-2 px-4 py-2 border border-white rounded-md hover:bg-white hover:text-teal-500 duration-300"
-                        onClick={() => setShowDropdown2(!showDropdown2) && setShowDropdown(false)}
+                        onClick={() => {
+                            setShowDropdown2(!showDropdown2);
+                            setShowDropdown(false);
+                        }}
                        
                     >Sign Up →</button>
                     {showDropdown2 && (
-                        <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg p-4 border">
+                        <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg p-4 border z-50">
                             <input
                                 type="text"
                                 className="w-full p-2 border rounded-md mb-2"
